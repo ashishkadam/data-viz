@@ -25,15 +25,13 @@ def start():
     print 'Converting values to JSON...'
     celd = 2
     celegans = open('celegans.json','w')
-    head = "{\n""\"name\":\"NeuroNetwork\",\n"
-    foot = "\n}\n]"*302
+    head = "{\n""\"name\":\"NeuroNetwork\",\n\"children\": [\n"
     celegans.write(head)
 
     for i in range(301):
-        chld = "\"children\": [\n{\n\"name\":\""+colb[celd]+"\",\n\"Neurotransmitter\":\""+str(cold[celd])+"\",\n\"Receptor\":\""+str(colf[celd])+"\",\n\"size\":\"1400\",\n"
+        chld = "{\n\"name\":\""+colb[celd]+"\",\n\"children\": [\n{\"name\": \""+str(cold[celd])+"\", \"size\": 3000},\n{\"name\": \""+str(colf[celd])+"\", \"size\": 3000},\n]\n},\n"
         celd += 1
         celegans.write(chld)
-    celegans.write(foot)
 
     celegans.close()
 
