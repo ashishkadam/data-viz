@@ -29,10 +29,11 @@ def start():
     celegans.write(head)
 
     for i in range(301):
-        chld = "{\n\"name\":\""+colb[celd]+"\",\n\"children\": [\n{\"name\": \""+str(cold[celd])+"\", \"size\": 3000},\n{\"name\": \""+str(colf[celd])+"\", \"size\": 3000},\n]\n},\n"
+        chld = "{\n\"name\":\""+colb[celd]+"\",\n\"children\": [\n{\"name\": \""+str(cold[celd])+"\", \"size\": 3000},\n{\"name\": \""+str(colf[celd])+"\", \"size\": 3000}\n]\n},\n"
         celd += 1
         celegans.write(chld)
 
+    celegans.write("]\n}")
     celegans.close()
 
     print "\nWORKS!, celegans.json was generated!\n"
