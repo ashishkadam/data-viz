@@ -8,4 +8,5 @@ This repo have six files:
     *d3_002.js (Module of D3JS - www.d3js.org)
     *celegans.json (json file is used for celegans-hierarchy.html to generate the DataViz, thanks to D3JS).
     
-    *The DataViz, only works if is executed from a web server or for tests in the localhost (With XAMPP, LAMPP...others)*
+    *Because of browser restrictions on loading JSON locally (see here: https://github.com/mrdoob/three.js/wiki/How-to-run-things-locally), the DataViz, only works if is executed from a web server or for tests in the localhost. (With XAMPP, LAMPP...others)*
+    * python -m SimpleHTTPServer is a good way to run this *
