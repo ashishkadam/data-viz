@@ -21,6 +21,8 @@ To run the script just go to this folder on the command line (on any OS with Pyt
 and type "python worm2hive.py". The result will be stored on worms.txt, so now with jhive
 you can open it and make your own hive plots.
 
+You can get JHive here: http://www.hiveplot.net/distro/jhive-0.0.16.zip
+
 To color gap junctions, just write this on the rules and apply: e(synapse=GapJunction)
 [thickness=1;rgb=2;opacity=50].
 
