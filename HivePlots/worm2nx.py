@@ -48,43 +48,36 @@ for row in reader:
     worm[row[0]][row[1]]['synapse'] = row[2]
     worm[row[0]][row[1]]['neurotransmitter'] = row[4]
 
-print "******DEGREES OF TOP FOUR INTERNEURONS*******"
-print "Degree of AVAL: " + str(worm.degree('AVAL'))
-print "Degree of AVAR: " + str(worm.degree('AVAR'))
-print "Degree of AVBL: " + str(worm.degree('AVBL'))
-print "Degree of AVBR: " + str(worm.degree('AVBR'))
-
-print "******DEGREES OF NEXT FOUR INTERNEURONS*******"
-print "Degree of PVCR: " + str(worm.degree('PVCR'))
-print "Degree of PVCL: " + str(worm.degree('PVCL'))
-print "Degree of AVDR: " + str(worm.degree('AVDR'))
-print "Degree of AVER: " + str(worm.degree('AVER'))
-
-print "******DEGREE OF TOP SENSORY NEURON*******"
-print "Degree of ADEL: " + str(worm.degree('ADEL'))
-print "******DEGREE OF TOP MOTOR NEURON*******"
-print "Degree of RIMR: " + str(worm.degree('RIMR'))
-
+#get the degree of a given node for gap junction edges only
 def GJ_degree(node):
     count = 0
     for item in worm.in_edges_iter(node,data=True):
         if 'GapJunction' in item[2]['synapse']:
+            #count = count + int(item[2]['weight'])
             count = count + 1
     for item in worm.out_edges_iter(node,data=True):
         if 'GapJunction' in item[2]['synapse']:
+            #count = count + int(item[2]['weight'])
             count = count + 1
     return count
 
+#get the degree of a given node for chemical synapse edges only
 def Syn_degree(node):
     count = 0
     for item in worm.in_edges_iter(node,data=True):
         if 'Send' in item[2]['synapse']:
+            #count = count + int(item[2]['weight'])
             count = count + 1
     for item in worm.out_edges_iter(node,data=True):
         if 'Send' in item[2]['synapse']:
+            #count = count + int(item[2]['weight'])
             count = count + 1
     return count
 
+#for a given set of neuron nodes, count the total degree, 
+# the degree of gap junctions only, and the degree of the 
+# chemical synapse edges and store them in 3 dicts, 
+# ids, ids_GJ and ids_Syn
 ids = {}
 ids_GJ = {}
 ids_Syn = {}
@@ -94,22 +87,56 @@ for item in worm.nodes_iter(data=True):
             ids[item[0]] = worm.degree(item[0])
             ids_GJ[item[0]] = GJ_degree(item[0])
             ids_Syn[item[0]] = Syn_degree(item[0])
+            
+degrees = []
+for item in worm.nodes_iter(data=True):
+    degrees.append(int(worm.degree(item[0])))
+    
+print "AVAL in edges: " + str(len(worm.in_edges('AVAL')))
+
+import numpy as np
+print "**********************"
+print "Average Degree: " + str(np.mean(degrees))
+print "Std. Dev Degree: " + str(np.std(degrees))
+
+print "******DEGREES OF TOP FOUR INTERNEURONS*******"
+for x in ['AVAL', 'AVAR', 'AVBL', 'AVBR']:
+    print "Degree of " + x + ": " + str(worm.degree(x)) + " Z-score: " + str((worm.degree(x) - np.mean(degrees)) / np.std(degrees))
+
+print "******DEGREES OF NEXT FOUR INTERNEURONS*******"
+for x in ['PVCR', 'PVCL', 'AVDR', 'AVER']:
+    print "Degree of " + x + ": " + str(worm.degree(x)) + " Z-score: " + str((worm.degree(x) - np.mean(degrees)) / np.std(degrees))
+
+print "******DEGREE OF TOP SENSORY NEURON*******"
+print "Degree of ADEL: " + str(worm.degree('ADEL')) + " Z-score: " + str((worm.degree('ADEL') - np.mean(degrees)) / np.std(degrees))
+print "******DEGREE OF TOP MOTOR NEURON*******"
+print "Degree of RIMR: " + str(worm.degree('RIMR')) + " Z-score: " + str((worm.degree('RIMR') - np.mean(degrees)) / np.std(degrees))
 
 import operator
 
 ids = sorted(ids.iteritems(), key=operator.itemgetter(1))
-ids_GJ = sorted(ids_GJ.iteritems(), key=operator.itemgetter(1))
-ids_Syn = sorted(ids_Syn.iteritems(), key=operator.itemgetter(1))
+
+ids_GJ_sorted = []
+ids_Syn_sorted = []
+for item in ids:
+    ids_GJ_sorted.append((item[0], ids_GJ[item[0]]))
+    ids_Syn_sorted.append((item[0], ids_Syn[item[0]] + ids_GJ[item[0]])) #add syn to GJ so total bar height is total degree
+
+ids_GJ = ids_GJ_sorted
+ids_Syn = ids_Syn_sorted
+
+#print ids
+#print ids_GJ
+#print ids_Syn
 
 from pylab import *
 
 pos = arange(len(ids))+1    # the bar centers on the y axis
 
-#fig = figure(figsize=(20,20))
 fig = figure(figsize=(10,10))
 ax = fig.add_subplot(111)
 
-p1 = bar(pos,[x[1] for x in ids], align='center', color='r')
+#p1 = bar(pos,[x[1] for x in ids], align='center', color='r')
 
 p2 = bar(pos,[x[1] for x in ids_Syn], align='center')
 
@@ -119,7 +146,8 @@ xlabel('Interneurons')
 ylabel('Degree')
 xticks( pos, [x[0] for x in ids])
 title('Interneurons by node degree')
-legend( (p1[0], p2[0], p3[0]), ('All edges', 'Synapses only', 'Gap junctions only'), loc=2)
+#legend( (p1[0], p2[0], p3[0]), ('All edges', 'Synapses only', 'Gap junctions only'), loc=2)
+legend( (p2[0], p3[0]), ('Synapses', 'Gap junctions'), loc=2)
 setp(ax.get_xticklabels(), fontsize=12, rotation='vertical')
 
 show()
