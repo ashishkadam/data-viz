@@ -15,6 +15,10 @@ regular connectivity spreadsheet
 5) worm2hive.py - Python script that converts the connectivity info (specifically from
 connectome.csv and neurons.csv) into the jhive format.
 
+6) worm2nx.py - A modification of worm2hive.py that explores the connectome.csv and 
+neurons.csv data structure using NetworkX and Matplotlib.  An iPython notebook was created
+to capture the development of this here: http://nbviewer.ipython.org/5486105
+
 6) *.png - some Hive Plots made with jhive and edited with MS Paint.
 
 To run the script just go to this folder on the command line (on any OS with Python 2.7)
